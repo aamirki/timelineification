@@ -3,20 +3,29 @@ import './App.css'
 import fetchWikipediaFact from './logic/fetch_wikipedia_fact';
 
 function App() {
-  const [fact, setFact] = useState(null);
+  const [facts, setFacts] = useState([]);
 
   useEffect(() => {
     async function _fetch() {
-      setFact(await fetchWikipediaFact(1899));
+      // TODO: algo for coming up with these years
+      setFacts(
+        await Promise.all([
+          fetchWikipediaFact(2021),
+          fetchWikipediaFact(2017),
+          fetchWikipediaFact(1999),
+          fetchWikipediaFact(1736),
+          fetchWikipediaFact(1512),
+        ]),
+      );
     }
     _fetch();
   }, []);
 
   return (
     <>
-      <p>
-        {fact?.fact ?? 'Hello Word'}
-      </p>
+      <div>
+        {facts.map((fact) => <p>{fact.fact}<br /></p>)}
+      </div>
     </>
   )
 }
