@@ -40,10 +40,9 @@ async function _fetchWikipediaFact(year) {
 // The random seed will be based upon today's date, so everyone
 // in the world gets the same puzzle daily (starting at midnight their local
 // time).
-export default async function generateFacts(numFacts = 5, attempt = 0) {
+export default async function generateFacts(numFacts, attempt = 0, years = []) {
   const todayDate = new Date().toDateString();
   const factPromises = [];
-  const years = [];
   let i = 0;
   while (factPromises.length < numFacts) {
     const randomizer = rand.create(`${attempt}-${todayDate}-${i}`);
@@ -59,7 +58,9 @@ export default async function generateFacts(numFacts = 5, attempt = 0) {
   const facts = (await Promise.all(factPromises)).filter((fact) => fact);
   // in case we didn't get enough facts, try again
   if (facts.length < numFacts) {
-    facts.push(...(await generateFacts(numFacts - facts.length, attempt + 1)));
+    facts.push(
+      ...(await generateFacts(numFacts - facts.length, attempt + 1, years)),
+    );
   }
   return facts;
 }
